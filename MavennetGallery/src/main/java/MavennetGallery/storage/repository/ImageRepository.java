@@ -8,11 +8,10 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
-    List<Image> findAllByAlbum(Album album);
 
-    List<Image> findByUserIdentifierEquals(String userIdentifier);
+    List<Image> findAllByUserIdentifierEqualsAndAlbumEquals(String userIdentifier, Album album);
 
-    List<Image> findByUserIdentifierEqualsAndAlbumEquals(String userIdentifier, Album album);
+    Image findByUserIdentifierAndId(String userIdentifier, Long id);
 
     Image findByTitle(String title);
 

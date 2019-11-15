@@ -1,18 +1,18 @@
 package MavennetGallery.ui.controller.api;
 
+import MavennetGallery.common.Access.AccessLevel;
+import MavennetGallery.common.Access.UserInfo;
 import MavennetGallery.common.entity.Album;
 import MavennetGallery.common.entity.Image;
 import MavennetGallery.common.exception.AlbumNotFoundException;
-import MavennetGallery.logic.GateKeeper;
 import MavennetGallery.logic.AlbumLogic;
+import MavennetGallery.logic.GateKeeper;
 import MavennetGallery.logic.ImageLogic;
-import org.springframework.web.bind.annotation.*;
-import MavennetGallery.common.Access.AccessLevel;
-import MavennetGallery.common.Access.UserInfo;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class ImageController extends BaseRestController {
@@ -36,6 +36,16 @@ public class ImageController extends BaseRestController {
                 .orElseThrow(() -> new AlbumNotFoundException(albumId));
         gateKeeper.verifyAccessForAlbum(album, AccessLevel.CAN_READ);
 
-        return this.imageLogic.findAllImageByAlbum(album);
+        return this.imageLogic.findAllImageByUserAndAlbum(userInfo.getUserId(), album);
+    }
+
+    @GetMapping("/albums/{albumId}/images/{imageId}")
+    public Image viewImagesInAlbum(@PathVariable Long albumId, @PathVariable Long imageId) {
+        UserInfo userInfo = gateKeeper.verifyLoginAccess();
+        Album album = albumLogic.findById(albumId)
+                .orElseThrow(() -> new AlbumNotFoundException(albumId));
+        gateKeeper.verifyAccessForAlbum(album, AccessLevel.CAN_READ);
+
+        return this.imageLogic.findImageByUserAndId(userInfo.getUserId(), imageId);
     }
 }

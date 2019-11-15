@@ -19,8 +19,13 @@ public class ImageLogic {
     }
 
     @Transactional
-    public List<Image> findAllImageByAlbum(Album album) {
-        return imageRepository.findAllByAlbum(album);
+    public List<Image> findAllImageByUserAndAlbum(String userIdentifier, Album album) {
+        return imageRepository.findAllByUserIdentifierEqualsAndAlbumEquals(userIdentifier, album);
+    }
+
+    @Transactional
+    public Image findImageByUserAndId(String userIdentifier, Long id) {
+        return imageRepository.findByUserIdentifierAndId(userIdentifier, id);
     }
 
     @Transactional
